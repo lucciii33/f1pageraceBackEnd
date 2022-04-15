@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Product
 #from models import Person
 
 app = Flask(__name__)
@@ -38,6 +38,29 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+@app.route('/product', methods=['GET'])
+def get_product():
+    
+    product_query = Product.query.all()
+    all_product = list(map(lambda x: x.serialize(),  product_query))
+    
+    return jsonify(all_product), 200
+
+@app.route('/product', methods=['POST'])
+def post_product():
+    body = request.json
+
+    product = Product(price=body['price'], image=body['image'], description=body['description'] )
+    db.session.add(product)
+    db.session.commit()
+
+    product = Product.query.all()
+    all_product= list(map(lambda x: x.serialize(),product ))
+    
+
+    return jsonify(all_product), 200
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
