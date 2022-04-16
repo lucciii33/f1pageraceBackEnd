@@ -61,27 +61,27 @@ def post_product():
 
     return jsonify(all_product), 200
 
-# @app.route('/product/<int:id>', methods=['PUT'])
-# def edit_product():
+@app.route('/product/<int:id>', methods=['PUT'])
+def edit_product(id):
 
-#     body = request.get_json()
+    body = request.get_json()
 
-#     product_id = Product.query.get(body['id'])
-#     if product_id is None:
-#         raise APIException('Product no found', status_code=404)
+    product_id = Product.query.get(id)
+    if product_id is None:
+        raise APIException('Product no found', status_code=404)
 
-#     if "image" in body:
-#         product_id.image = body["image"]
-#     if "price" in body:
-#         product_id.price = body["price"]
-#     if "description" in body:
-#         product_id.description = body["description"]
-#         db.session.commit()
+    if "image" in body:
+        product_id.image = body["image"]
+    if "price" in body:
+        product_id.price = body["price"]
+    if "description" in body:
+        product_id.description = body["description"]
+        db.session.commit()
 
-#     products = Product.query.all()
-#     all_products = list(map(lambda x: x.serialize(), products))
+    products = Product.query.all()
+    all_products = list(map(lambda x: x.serialize(), products))
 
-#     return jsonify(all_products), 200
+    return jsonify(all_products), 200
 
 @app.route('/product/<int:id>', methods=['DELETE'])
 def delete_product(id):
