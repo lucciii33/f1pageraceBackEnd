@@ -61,6 +61,21 @@ def post_product():
 
     return jsonify(all_product), 200
 
+# @app.route('/products', methods=['POST'])
+# def post_products():
+#     body = request.json
+#     for item in body:
+
+#         product = Product(price=body['price'], image=body['image'], description=body['description'] )
+#         db.session.add(product)
+#         db.session.commit()
+
+#     product = Product.query.all()
+#     all_product= list(map(lambda x: x.serialize(),product ))
+    
+
+    # return jsonify(all_product), 200
+
 @app.route('/product/<int:id>', methods=['PUT'])
 def edit_product(id):
 
