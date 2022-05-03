@@ -51,7 +51,7 @@ def get_product():
 def post_product():
     body = request.json
 
-    product = Product(price=body['price'], image=body['image'], description=body['description'] )
+    product = Product(price=body['price'], image=body['image'], description=body['description'], gender=body['gender'] )
     db.session.add(product)
     db.session.commit()
 
@@ -91,6 +91,8 @@ def edit_product(id):
         product_id.price = body["price"]
     if "description" in body:
         product_id.description = body["description"]
+    if "gender" in body:
+        product_id.gender = body["gender"]
         db.session.commit()
 
     products = Product.query.all()
