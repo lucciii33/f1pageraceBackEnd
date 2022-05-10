@@ -115,6 +115,53 @@ def delete_product(id):
 
     return jsonify(all_products), 200
 
+#///////////////Favorites///////////////////////////////////////////////////////////////////////////////
+@app.route('/favorite', methods=['GET'])
+def get_all_favorites():
+    
+    favorite_query = Favorite.query.all()
+    all_favorites = list(map(lambda x: x.serialize(),  favorite_query))
+    
+    return jsonify(all_favorites), 200
+
+@app.route('/favorite/<int:id>', methods=['GET'])
+def get_favorite(id):
+    
+    favorite_query = Favorite.query.filter_by(user_id = id)
+    all_favorites = list(map(lambda x: x.serialize(),  favorite_query))
+    
+    return jsonify(all_favorites), 200
+
+@app.route('/favorite', methods=['POST'])
+def post_favorite():
+    body = request.json
+
+    favorite = Favorite(product_id=body['product_id'],user_id=body['user_id'])
+
+    db.session.add(favorite)
+    db.session.commit()
+
+    favorites = Favorite.query.all()
+    all_favorites= list(map(lambda x: x.serialize(), favorites))
+    
+
+    return jsonify(all_favorites), 200
+
+#deberia ser drink_id?
+@app.route('/favorite/<int:id>', methods=['DELETE'])
+def delete_favorite(id):
+    favorite_id = Favorite.query.get(id)
+    if favorite_id is None:
+        raise APIException('Favorite not found', status_code=404)
+   
+    db.session.delete(favorite_id)
+    db.session.commit()
+
+    favorites = Favorite.query.all()
+    all_favorites= list(map(lambda x: x.serialize(), favorites))
+    
+
+    return jsonify(all_favorites), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

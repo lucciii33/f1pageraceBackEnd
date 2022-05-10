@@ -36,3 +36,22 @@ class Product(db.Model):
             "description": self.description,
             "gender": self.gender
         }
+
+class Favorite(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.String(120), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=False, nullable=False, )
+    user = db.relationship("User")
+
+    def __repr__(self):
+        return f'<Favorite {self.product_id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id":  self.user_id,
+            "drink_name": self.product_id,
+            # "shoppinglist_id": self.shoppinglist_id
+            # do not serialize the password, its a security breach
+        }
+
