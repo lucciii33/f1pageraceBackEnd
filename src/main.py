@@ -61,20 +61,21 @@ def post_product():
 
     return jsonify(all_product), 200
 
-# @app.route('/products', methods=['POST'])
-# def post_products():
-#     body = request.json
-#     for item in body:
+@app.route('/products', methods=['POST'])
+def post_products():
+    body = request.json
+    print(body)
+    for item in body:
 
-#         product = Product(price=body['price'], image=body['image'], description=body['description'] )
-#         db.session.add(product)
-#         db.session.commit()
+        product = Product(price=item['price'], image=item['image'], description=item['description'], gender=item['gender'] )
+        db.session.add(product)
+        db.session.commit()
 
-#     product = Product.query.all()
-#     all_product= list(map(lambda x: x.serialize(),product ))
+    product = Product.query.all()
+    all_product= list(map(lambda x: x.serialize(),product ))
     
 
-    # return jsonify(all_product), 200
+    return jsonify(all_product), 200
 
 @app.route('/product/<int:id>', methods=['PUT'])
 def edit_product(id):
@@ -125,7 +126,7 @@ def get_all_favorites():
     return jsonify(all_favorites), 200
 
 @app.route('/favorite/<int:id>', methods=['GET'])
-def get_favorite(id):
+def get_favorite_for_user(id):
     
     favorite_query = Favorite.query.filter_by(user_id = id)
     all_favorites = list(map(lambda x: x.serialize(),  favorite_query))

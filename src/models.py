@@ -6,11 +6,12 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    
+    favorite = db.relationship('Favorite')
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    favorite = db.relationship('Favorite',back_populates="user")
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.email
 
     def serialize(self):
         return {
@@ -25,8 +26,9 @@ class Product(db.Model):
     image = db.Column(db.String(550), unique=False, nullable=False)
     description = db.Column(db.String(150), unique=False, nullable=False)
     gender = db.Column(db.String(550), unique=False, nullable=False)
+    favorite = db.relationship('Favorite',back_populates="product")
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Product %r>' % self.description
 
     def serialize(self):
         return {
@@ -39,9 +41,16 @@ class Product(db.Model):
 
 class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.String(120), unique=True, nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), unique=False, nullable=False, )
+    product = db.relationship("Product", back_populates="favorite")
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=False, nullable=False, )
-    user = db.relationship("User")
+    user = db.relationship("User", back_populates="favorite")
+    name = db.Column(db.String(150), unique=False, nullable=False)
+
+
+    # user = db.relationship("User")
+    # product = db.relationship("Product")
+
 
     def __repr__(self):
         return f'<Favorite {self.product_id}>'
@@ -50,7 +59,8 @@ class Favorite(db.Model):
         return {
             "id": self.id,
             "user_id":  self.user_id,
-            "drink_name": self.product_id,
+            "product_id": self.product_id,
+            "name": self.name,
             # "shoppinglist_id": self.shoppinglist_id
             # do not serialize the password, its a security breach
         }
