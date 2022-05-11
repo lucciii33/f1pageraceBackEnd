@@ -45,7 +45,6 @@ class Favorite(db.Model):
     product = db.relationship("Product", back_populates="favorite")
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=False, nullable=False, )
     user = db.relationship("User", back_populates="favorite")
-    name = db.Column(db.String(150), unique=False, nullable=False)
 
 
     # user = db.relationship("User")
@@ -60,7 +59,6 @@ class Favorite(db.Model):
             "id": self.id,
             "user_id":  self.user_id,
             "product_id": self.product_id,
-            "name": self.name,
             # "shoppinglist_id": self.shoppinglist_id
             # do not serialize the password, its a security breach
         }

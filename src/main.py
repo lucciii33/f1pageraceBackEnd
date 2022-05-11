@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Product
+from models import db, User, Product, Favorite
 #from models import Person
 
 app = Flask(__name__)
@@ -137,7 +137,7 @@ def get_favorite_for_user(id):
 def post_favorite():
     body = request.json
 
-    favorite = Favorite(product_id=body['product_id'],user_id=body['user_id'])
+    favorite = Favorite(body['product'].id,user_id=body['user'].id)
 
     db.session.add(favorite)
     db.session.commit()
@@ -148,7 +148,6 @@ def post_favorite():
 
     return jsonify(all_favorites), 200
 
-#deberia ser drink_id?
 @app.route('/favorite/<int:id>', methods=['DELETE'])
 def delete_favorite(id):
     favorite_id = Favorite.query.get(id)
