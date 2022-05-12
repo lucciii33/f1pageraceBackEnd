@@ -9,6 +9,10 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User, Product, Favorite
+# from flask_jwt_extended import create_access_token
+# from flask_jwt_extended import get_jwt_identity
+# from flask_jwt_extended import jwt_required
+
 #from models import Person
 
 app = Flask(__name__)
@@ -24,6 +28,20 @@ setup_admin(app)
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
+
+
+# @api.route("/token", methods=["POST"])
+# def create_token():
+#     email = request.json.get("email", None)
+#     password = request.json.get("password", None)
+#     user = User.query.filter_by(email=email, password=password ).first()
+#     print(user.serialize())
+#     print(user)
+#     if user is None:
+#         # the user was not found on the database
+#         return jsonify({"msg": "Bad username or password"}), 401
+#     access_token = create_access_token(identity=email)
+#     return jsonify({'access_token':access_token, 'email': email, 'user': user.serialize()})
 
 # generate sitemap with all your endpoints
 @app.route('/')
@@ -49,17 +67,20 @@ def get_product():
 
 @app.route('/product', methods=['POST'])
 def post_product():
-    body = request.json
-
-    product = Product(price=body['price'], image=body['image'], description=body['description'], gender=body['gender'] )
+    body = request.get_json()
+    price = body['price']
+    image = body['image']
+    description = body['description']
+    product_exist = Product.query.filter_by(description=description).first()
+    if product_exist is not None:
+        raise APIException("product already exist", 400)
+    product = Product(price=price, image=image, description=description, gender=gender )
     db.session.add(product)
     db.session.commit()
 
-    product = Product.query.all()
-    all_product= list(map(lambda x: x.serialize(),product ))
     
 
-    return jsonify(all_product), 200
+    return jsonify(product.serialize()), 200
 
 @app.route('/products', methods=['POST'])
 def post_products():
@@ -137,7 +158,10 @@ def get_favorite_for_user(id):
 def post_favorite():
     body = request.json
 
-    favorite = Favorite(body['product'].id,user_id=body['user'].id)
+    favorite_exist = Favorite.query.filter_by(product_id=body['product_id'], user_id=body['user_id']).first()
+    if favorite_exist is not None:
+        raise APIException("favorite already exist", 400)
+    favorite = Favorite(product_id = body['product_id'],user_id = body['user_id'])
 
     db.session.add(favorite)
     db.session.commit()

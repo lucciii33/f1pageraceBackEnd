@@ -28,7 +28,7 @@ class Product(db.Model):
     gender = db.Column(db.String(550), unique=False, nullable=False)
     favorite = db.relationship('Favorite',back_populates="product")
     def __repr__(self):
-        return '<Product %r>' % self.description
+        return  self.description
 
     def serialize(self):
         return {
