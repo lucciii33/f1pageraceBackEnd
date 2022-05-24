@@ -172,6 +172,20 @@ def post_favorite():
 
     return jsonify(all_favorites), 200
 
+@app.route('/favorite/<int:id>', methods=['PUT'])
+def edit_favorite(id):
+
+    body = request.get_json()
+
+    favorite = Favorite.query.get(id)
+    if favorite is None:
+        raise APIException('Product no found', status_code=404)
+
+    if "quantity" in body:
+        favorite.image = body["quantity"]
+
+    return jsonify(favorite.serialize), 200
+
 @app.route('/favorite/<int:id>', methods=['DELETE'])
 def delete_favorite(id):
     favorite_id = Favorite.query.get(id)

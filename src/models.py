@@ -45,6 +45,7 @@ class Favorite(db.Model):
     product = db.relationship("Product", back_populates="favorite")
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=False, nullable=False, )
     user = db.relationship("User", back_populates="favorite")
+    quatity = db.Column(db.Integer, default = 1)
 
 
     # user = db.relationship("User")
