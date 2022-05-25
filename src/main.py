@@ -182,7 +182,7 @@ def edit_favorite(id):
         raise APIException('Product no found', status_code=404)
 
     if "quantity" in body:
-        favorite.image = body["quantity"]
+        favorite.quantity = body["quantity"]
 
     return jsonify(favorite.serialize), 200
 
