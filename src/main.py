@@ -150,9 +150,9 @@ def get_all_favorites():
 def get_favorite_for_user(id):
     
     favorite_query = Favorite.query.filter_by(user_id = id)
-    all_favorites = list(map(lambda x: x.serialize(),  favorite_query))
+    single_favorites = Favorite.query.get(id)
     
-    return jsonify(all_favorites), 200
+    return jsonify(single_favorites.serialize()), 200
 
 @app.route('/favorite', methods=['POST'])
 def post_favorite():
@@ -166,25 +166,27 @@ def post_favorite():
     db.session.add(favorite)
     db.session.commit()
 
-    favorites = Favorite.query.all()
-    all_favorites= list(map(lambda x: x.serialize(), favorites))
+    
     
 
-    return jsonify(all_favorites), 200
+    return jsonify(all_favorites.serialize()), 200
 
 @app.route('/favorite/<int:id>', methods=['PUT'])
 def edit_favorite(id):
 
     body = request.get_json()
-
+    
     favorite = Favorite.query.get(id)
     if favorite is None:
         raise APIException('Product no found', status_code=404)
 
     if "quantity" in body:
         favorite.quantity = body["quantity"]
+    
+    
+    
 
-    return jsonify(favorite.serialize), 200
+    return jsonify(favorite.serialize()), 200
 
 @app.route('/favorite/<int:id>', methods=['DELETE'])
 def delete_favorite(id):
