@@ -176,13 +176,13 @@ def edit_favorite(id):
 
     body = request.get_json()
     
-    favorite = Favorite.query.get(id)
+    favorite = Favorite.query.filter_by(id=id).first()
     if favorite is None:
         raise APIException('Product no found', status_code=404)
 
     if "quantity" in body:
         favorite.quantity = body["quantity"]
-    
+    print(favorite.quantity)
     
     
 
