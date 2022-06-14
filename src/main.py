@@ -166,10 +166,11 @@ def post_favorite():
     db.session.add(favorite)
     db.session.commit()
 
-    
+    favorites = Favorite.query.filter_by(user_id = body['user_id'])
+    list_of_favorites = [item.serialize() for item in favorites]
     
 
-    return jsonify(all_favorites.serialize()), 200
+    return jsonify(list_of_favorites), 200
 
 @app.route('/favorite/<int:id>', methods=['PUT'])
 def edit_favorite(id):
