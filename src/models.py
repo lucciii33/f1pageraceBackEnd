@@ -60,7 +60,8 @@ class Favorite(db.Model):
             "id": self.id,
             "user_id":  self.user_id,
             "product_id": self.product_id,
-            "quantity": self.quantity
+            "quantity": self.quantity,
+            "product": self.product.serialize()
             # "shoppinglist_id": self.shoppinglist_id
             # do not serialize the password, its a security breach
         }
